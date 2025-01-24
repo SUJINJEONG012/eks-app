@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+#kind: Deployment
+kind: StatefulSet
+metadata:
+  name: db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql-container
+          image: mysql
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: k8s12345
+            - name: MYSQL_USER
+              value: app
+            - name: MYSQL_PASSWORD
+              value: app12345
+            - name: MYSQL_DATABASE
+              value: app
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              # - mountPath: /home/ubuntu/k8s-app-basic/data
+              name: mysqldata
+      volumes:
+        - name: mysqldata
+          persistentVolumeClaim:
+            claimName: db-pvc

@@ -1,6 +1,5 @@
 name: app github actions with cicd
 
-
 on:
   push:
     branches: [ "main" ]

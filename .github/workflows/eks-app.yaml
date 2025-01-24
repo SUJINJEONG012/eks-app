@@ -1,4 +1,4 @@
-name: App With Github Actions with EKS-App
+name: app github actions with ci
 
 on:
   push:

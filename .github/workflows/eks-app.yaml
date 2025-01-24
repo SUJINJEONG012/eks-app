@@ -9,7 +9,7 @@ permissions:
   contents: write  # 'write' 권한을 부여하여 푸시가 가능하게 함
   
 jobs:
-  ci:
+  ci-cd:
     runs-on: ubuntu-latest
 
     steps:

@@ -15,7 +15,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        repository: ${{ secrets.GIT_NAME }}/eks-app-manifest
+        repository: ${{ secrets.GIT_NAME }}/eks-app
         ref: main
         token: ${{ secrets.GIT_TOKEN }}
 

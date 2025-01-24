@@ -1,15 +1,15 @@
 apiVersion: v1
-kind: Service   
+kind: PersistentVolumeClaim
 metadata:
-  name: eks-app-service
+  name: eks-app-pvc
 spec:
-  selector:
-    app.kubernetes.io/name: eks-app
-  type: ClusterIP
-  ports:
-  - protocol: TCP
-    port: 8080
-    targetPort: 8080
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: gp2
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,3 +31,24 @@ spec:
         ports:
           - protocol: TCP
             containerPort: 8080
+        volumeMounts:
+          - name: eks-app-storage
+            mountPath: /data
+      volumes:
+        - name: eks-app-storage
+          persistentVolumeClaim:
+            claimName: eks-app-pvc
+
+---
+apiVersion: v1
+kind: Service   
+metadata:
+  name: eks-app-service
+spec:
+  selector:
+    app.kubernetes.io/name: eks-app
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

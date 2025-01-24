@@ -80,10 +80,13 @@ jobs:
 
     - name: Set up Image
       run: |
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_URI
-          docker build -t $ECR_URI:latest .
-          docker push $ECR_URI:latest
+        sed -i "s%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:[A-z0-9]*%image: ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}:${{ github.sha }}%" ./manifest/eks-app.yaml
 
+      # run: |
+      #     aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_URI
+      #     docker build -t $ECR_URI:latest .
+      #     docker push $ECR_URI:latest
+        
     - name: Commit and push Changes
       env:
         GIT_TOKEN: ${{ secrets.GIT_TOKEN }}

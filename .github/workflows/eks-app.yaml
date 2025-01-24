@@ -69,6 +69,7 @@ jobs:
         echo "ECR_URI=${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}" >> $GITHUB_ENV
         echo "ECR_URI set to ${{ secrets.ECR_REGISTRY }}/${{ secrets.ECR_REPO }}" # 디버깅 출력
 
+    # Build and push the Docker image to ECR using Docker Buildx
     - name: Build and push to ECR
       uses: docker/build-push-action@v6
       with:
@@ -76,12 +77,6 @@ jobs:
         push: true
         platforms: linux/arm64,linux/amd64
         tags: ${{ env.ECR_URI }}:${{ github.sha }}  # env.ECR_URI로 수정
-
-    - name: Set up Image
-      run: |
-          aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin ${{ env.ECR_URI }}
-          docker build -t ${{ env.ECR_URI }}:latest .
-          docker push ${{ env.ECR_URI }}:latest
 
     - name: Commit and push Changes
       env:

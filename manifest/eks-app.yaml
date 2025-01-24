@@ -30,7 +30,7 @@ spec:
         - name: ecr-registry-secret  # ECR 인증 정보를 저장한 secret 이름
       containers:
         - name: eks-app-container
-          image: 522814707405.dkr.ecr.ap-northeast-2.amazonaws.com/eks-app:79c9f82d25f817de1b2cbde89286809284f79f68
+          image: 522814707405.dkr.ecr.ap-northeast-2.amazonaws.com/eks-app:4b64a037ad6f7a5153466525dcc6802343e4babd
           ports:
             - protocol: TCP
               containerPort: 8080

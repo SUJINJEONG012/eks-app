@@ -2,10 +2,10 @@ name: app github actions with cicd
 
 on:
   push:
-    branches: [ "main" ]
-          
-permissions:
-  contents: write  # 'write' 권한을 부여하여 푸시가 가능하게 함
+   branches: 
+     - main
+   paths-ignore:
+     - 'manifest/**'  # 트리거되지 않도록 설정
   
 jobs:
   ci-cd:

@@ -1,10 +1,11 @@
 name: App With Github Actions with EKS-ArgoCD
 
 on:
-  push:
-    branches: [ "main" ]
-    paths-ignore:
-      - 'manifest/**'
+  workflow_dispatch
+  # push:
+  #   branches: [ "main" ]
+  #   paths-ignore:
+  #     - 'manifest/**'
       
 permissions:
   contents: write  # 'write' 권한을 부여하여 푸시가 가능하게 함
@@ -17,7 +18,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
       with:
-        repository: ${{ secrets.GIT_NAME }}/eks-ecr-argocd
+        repository: ${{ secrets.GIT_NAME }}/eks-app
         ref: main
         token: ${{ secrets.GITHUB_TOKEN }}
 

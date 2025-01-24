@@ -3,8 +3,7 @@ name: app github actions with cicd
 on:
   push:
     branches: [ "main" ]
-    paths-ignore:
-      - 'manifest/**'
+    
       
 permissions:
   contents: write  # 'write' 권한을 부여하여 푸시가 가능하게 함

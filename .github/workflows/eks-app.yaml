@@ -1,6 +1,5 @@
 name: app github actions with ci
 
-
 on:
   push:
     branches: [ "main" ]

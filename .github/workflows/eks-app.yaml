@@ -71,7 +71,10 @@ jobs:
 
     - name: Set up Image
       run: |
-        sed -i "s%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:[a-zA-Z0-9]*%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:${{ github.sha }}%" ./manifest/eks-app.yaml
+        #sed -i "s%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:[a-zA-Z0-9]*%image: ${{ secrets.AWS_ECR_ID }}.dkr.ecr.${{ secrets.AWS_ECR_REGION }}.amazonaws.com/${{ secrets.AWS_ECR_REPOSITORY }}:${{ github.sha }}%" ./manifest/eks-app.yaml
+        sed -i "s%image: 522814707405.dkr.ecr.ap-northeast-2.amazonaws.com/eks-app:[a-zA-Z0-9]*%image: 522814707405.dkr.ecr.ap-northeast-2.amazonaws.com/eks-app:${{ github.sha }}%" ./manifest/eks-app.yaml
+
+
 
     - name: Commit and push changes
       run: |

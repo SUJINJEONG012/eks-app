@@ -20,7 +20,7 @@ public class S3FileController {
 	
 	private final S3Service s3Service;
 	
-	@GetMapping("/file")
+	@GetMapping(value = "/api/files")
 	public String file() {
 		return "S3파일컨트롤러는 정상";
 	}

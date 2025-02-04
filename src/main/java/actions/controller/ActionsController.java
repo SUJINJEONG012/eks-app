@@ -35,5 +35,10 @@ public class ActionsController {
 		return "Statsu - returned by Pod4";
 	}
 	
+	@GetMapping(value= "/api/status5")
+	public String statusTest5(){	
+		return "Statsu - returned by Pod5";
+	}
+	
 
 }

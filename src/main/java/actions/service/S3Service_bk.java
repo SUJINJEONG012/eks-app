@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class S3Service {
+public class S3Service_bk {
 	
 	private final AmazonS3 amazonS3;
 	private final AttachmentFileRepository fileRepository;
@@ -36,52 +36,58 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
     
-    // Kubernetes에서 마운트된 볼륨 경로를 사용
-    private final String DIR_NAME = "/app/data"; 
-
+    private final String DIR_NAME = "s3_data";
     
     // 파일 업로드
 	@Transactional
 	public void uploadS3File(MultipartFile file) throws Exception {
 		log.info("S3Service :uploadS3File " );
+		// DB저장
+		// C:/CE/97.data/s3_data에 파일 저장 -> S3 전송 및 저장 (putObject)
+		// /Users/jeongsujin/01backend/cloudserver/97_data/s3_data
 		
 		if(file == null) {
 			throw new Exception("파일 전달 오류 발생");
 		}
 		
-		// 컨테이너 내부 볼륨 경로 사용
-		String filePath = DIR_NAME;
+		// 파일이 존재한다면 
+		// 파일경로 => 리눅스환경에서 맞게끔 변경되어야 한다.
+		String filePath = "/Users/jeongsujin/01backend/cloudserver/97_data/" + DIR_NAME;
+		//String filePath = "/home/ubunt/" + DIR_NAME;
+		
 		String attachmentOriginalFileName = file.getOriginalFilename();
-		
 		UUID uuid = UUID.randomUUID();
-		String attachmentFileName = uuid.toString()+ "_" + attachmentOriginalFileName;
-		Long attachmentFileSize= file.getSize();
+		String attachmentFileName = uuid.toString() + "_" + attachmentOriginalFileName;
+		Long attachmentFileSize = file.getSize();
 		
+		// 빌더를 이용해서 객체 만들거임 => 이렇게 하면 새로운 엔티티 객체가 만들어짐
 		AttachmentFile attachmentFile = AttachmentFile.builder()
-				.filePath(filePath)
-				.attachmentOriginalFileName(attachmentOriginalFileName)
-				.attachmentFileName(attachmentFileName)
-				.attachmentFileSize(attachmentFileSize)
-				.build();
+										.filePath(filePath)
+										.attachmentOriginalFileName(attachmentOriginalFileName)
+										.attachmentFileName(attachmentFileName)
+										.attachmentFileSize(attachmentFileSize)
+										.build();
 		
+		// save로 디비에 저장
 		Long fileNo = fileRepository.save(attachmentFile).getAttachmentFileNo();
 		
-		if(fileNo != null) {
-			// 물리적으로 파일을 저장할 경로
+		if(fileNo !=null) {
+			// 물리로 저장한다. 
 			File uploadFile = new File(attachmentFile.getFilePath() + "/" + attachmentFileName);
-			file.transferTo(uploadFile);  // 컨테이너 내 /app/data 에 저장됨
-			
-			// S3 업로드
-	        String s3Key = "s3_data/" + uploadFile.getName();
-	        amazonS3.putObject(bucketName, s3Key, uploadFile);
-
-	        // S3에 저장되면 컨테이너 내 파일 삭제
-	        if (uploadFile.exists()) {
-	            uploadFile.delete();
-	        }
-	        
-		}
+			// 로컬에 저장
+			file.transferTo(uploadFile);
 		
+			// s3 전송 및 저장 
+			// bucketName,
+			// key: 버킷내부에 저장되는 객체가 저장되는 경로 + 파일명(객체명)
+			String s3Key = DIR_NAME + "/" +  uploadFile.getName();
+			amazonS3.putObject(bucketName, s3Key, uploadFile);
+			
+			// s3에 저장이 되면, 로컬에 있는 파일은 삭제
+//			if(uploadFile.exists()) {
+//				uploadFile.delete();			
+//			}
+		}
 	}
 	
 	// 파일 다운로드

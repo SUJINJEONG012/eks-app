@@ -84,11 +84,9 @@ public class S3Service {
 			amazonS3.putObject(bucketName, s3Key, uploadFile);
 			
 			// s3에 저장이 되면, 로컬에 있는 파일은 삭제
-			if(uploadFile.exists()) {
-				uploadFile.delete();
-				
-			
-			}
+//			if(uploadFile.exists()) {
+//				uploadFile.delete();			
+//			}
 		}
 	}
 	

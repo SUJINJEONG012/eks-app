@@ -44,7 +44,9 @@ public class S3FileController {
 		return s3Service.downloadS3File(fileNo);
 	}
 	
-	@DeleteMapping("/api/s3/files/{fileNo}")
+
+	
+	@DeleteMapping(value = "/api/s3/files/{fileNo}")
 	public ResponseEntity<String> deleteFile(@PathVariable("fileNo") long fileNo){
 		return s3Service.deleteFile(fileNo);
 	}

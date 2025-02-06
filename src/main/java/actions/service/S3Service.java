@@ -101,7 +101,7 @@ public class S3Service {
         String s3Key = "s3_data/" + attachmentFile.getAttachmentFileName();
         S3Object s3Object = amazonS3.getObject(bucketName, s3Key);
 
-        //️⃣ S3 파일 내용을 InputStreamResource로 변환
+        //️ S3 파일 내용을 InputStreamResource로 변환
         S3ObjectInputStream s3is = s3Object.getObjectContent();
         resource = new InputStreamResource(s3is);
 		
@@ -124,12 +124,28 @@ public class S3Service {
 //										.builder("attachment")
 //										.filename("file-text.txt")
 //										.build());
-		
-		
-		
-		
-		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
-		
+
+		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);		
 	}
 	
+	// 파일 삭제
+	@Transactional
+	public ResponseEntity<String> deleteFile(long fileNo) {
+		try {
+			//DB에서 파일 가져오기
+			AttachmentFile attachmentFile = fileRepository.findById(fileNo)
+					.orElseThrow(() -> new NoSuchElementException("파일이 존재하지 않습니다."));
+			// S3에서 파일 삭제
+			String s3Key = "s3_data/" + attachmentFile.getAttachmentFileName();
+			amazonS3.deleteObject(bucketName, s3Key);  // S3에서 삭제
+			
+		     // DB에서 파일 정보 삭제
+			
+		     fileRepository.deleteById(fileNo);
+		     return new ResponseEntity<>("파일이 성공적으로 삭제되었습니다.", HttpStatus.OK);
+		}catch(Exception e) {
+			log.error("파일 삭제 중 오류 발생 :", e.getMessage() );
+			 return new ResponseEntity<>("파일 삭제에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

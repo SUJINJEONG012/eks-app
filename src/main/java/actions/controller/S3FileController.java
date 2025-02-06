@@ -26,6 +26,7 @@ public class S3FileController {
 		return "S3파일컨트롤러는 정상";
 	}
 	
+	
 	@PostMapping(value = "/api/s3/files")
 	public void uploadS3File(@RequestPart(value ="file", required=false) MultipartFile file) {
 		try {

@@ -88,8 +88,8 @@ public class S3Service {
 	@Transactional
 	public ResponseEntity<Resource> downloadS3File(long fileNo){
 		
-		AttachmentFile attachmentFile = null;
-		Resource resource = null;
+		AttachmentFile attachmentFile;
+		Resource resource = null ;
 		
 		try {
 		// DB에서 파일 검색 -> S3의 파일 가져오기 (getObject) -> 전달
@@ -97,10 +97,13 @@ public class S3Service {
 										.orElseThrow(() -> new NoSuchElementException("파일이 없습니다."));
 		
 		
-		S3Object s3Object= amazonS3.getObject(bucketName, DIR_NAME + "/" + attachmentFile.getAttachmentFileName());
-		
-		S3ObjectInputStream s3is = s3Object.getObjectContent();
-		resource = new InputStreamResource(s3is);
+		// S3에서 파일 다운로드 (경로 수정)
+        String s3Key = "s3_data/" + attachmentFile.getAttachmentFileName();
+        S3Object s3Object = amazonS3.getObject(bucketName, s3Key);
+
+        //️⃣ S3 파일 내용을 InputStreamResource로 변환
+        S3ObjectInputStream s3is = s3Object.getObjectContent();
+        resource = new InputStreamResource(s3is);
 		
 		}catch(Exception e) {
 			return new ResponseEntity<Resource>(resource, null, HttpStatus.NO_CONTENT);

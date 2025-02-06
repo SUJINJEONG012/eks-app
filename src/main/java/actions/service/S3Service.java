@@ -75,10 +75,10 @@ public class S3Service {
 	        String s3Key = "s3_data/" + uploadFile.getName();
 	        amazonS3.putObject(bucketName, s3Key, uploadFile);
 
-	        // S3에 저장되면 컨테이너 내 파일 삭제
-	        if (uploadFile.exists()) {
-	            uploadFile.delete();
-	        }
+//	        // S3에 저장되면 컨테이너 내 파일 삭제
+//	        if (uploadFile.exists()) {
+//	            uploadFile.delete();
+//	        }
 	        
 		}
 		
